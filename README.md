@@ -1,1 +1,1 @@
-# GAT420 - AI
+# GAT420 - Unity AI
