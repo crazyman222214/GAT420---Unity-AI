@@ -2,9 +2,7 @@ using UnityEngine;
 
 public abstract class Movement : MonoBehaviour
 {
-    [SerializeField] protected float maxSpeed = 5;
-    [SerializeField] protected float minSpeed = 1;
-    [SerializeField] protected float maxForce = 5;
+    public MovementData data;
 
     public Vector3 Velocity { get; set; }
     public Vector3 Acceleration { get; set; }
