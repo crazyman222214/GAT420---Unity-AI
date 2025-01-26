@@ -1,4 +1,5 @@
 using UnityEditor;
+using UnityEditor.TerrainTools;
 using UnityEngine;
 
 public class AutonomousAgent : AIAgent
@@ -103,16 +104,22 @@ public class AutonomousAgent : AIAgent
         return force;
     }
 
-    private Vector3 Seperation(GameObject[] neighbors)
+    private Vector3 Seperation(GameObject[] neighbors, float radius)
     {
-        Vector3 positions = Vector3.zero;
+        Vector3 seperation = Vector3.zero;
         foreach (var neighbor in neighbors)
         {
-            positions += neighbor.transform.position;
+            Vector3 direction = transform.position - neighbor.transform.position;
+            float distance = Vector3.Magnitude(direction);
+            if (distance < radius)
+            {
+                seperation += direction / (distance * distance);
+            }
+            seperation += neighbor.transform.position;
+
         }
-        Vector3 center = positions / neighbors.Length;
-        Vector3 direction = transform.position -center;
-        Vector3 force = GetSteeringForce(direction);
+
+        Vector3 force = GetSteeringForce(seperation);
 
         return force;
     }
@@ -127,16 +134,11 @@ public class AutonomousAgent : AIAgent
         {
             positions += neighbor.transform.position;
         }
-        positions /= neighbors.Length;
+        Vector3 averagePosition = positions /= neighbors.Length;
 
-
-        Vector3 center = positions / neighbors.Length;
-        Vector3 direction = transform.position - center;
-        Vector3 force = GetSteeringForce(direction);
+        Vector3 force = GetSteeringForce(positions);
 
         return force;
-
-        return Vector3.zero;
     }
 
     private Vector3 Wander()
