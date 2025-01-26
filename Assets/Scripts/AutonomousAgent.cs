@@ -50,7 +50,7 @@ public class AutonomousAgent : AIAgent
             var gameObjects = flockPerception.GetGameObjects();
             if (gameObjects.Length > 0)
             {
-                movement.ApplyForce( Cohesion(gameObjects));
+                movement.ApplyForce(Cohesion(gameObjects));
                 movement.ApplyForce(Seperation(gameObjects));
                 movement.ApplyForce(Alignment(gameObjects));
             }
@@ -60,7 +60,7 @@ public class AutonomousAgent : AIAgent
         {
 
             Vector3 force = Wander();
-            
+            print(force);
             movement.ApplyForce(force);
         }
 
@@ -116,8 +116,25 @@ public class AutonomousAgent : AIAgent
 
         return force;
     }
+
+
     private Vector3 Alignment(GameObject[] neighbors)
     {
+
+        Vector3 positions = Vector3.zero;
+        //Averaging the positions of the neighbors
+        foreach (var neighbor in neighbors)
+        {
+            positions += neighbor.transform.position;
+        }
+        positions /= neighbors.Length;
+
+
+        Vector3 center = positions / neighbors.Length;
+        Vector3 direction = transform.position - center;
+        Vector3 force = GetSteeringForce(direction);
+
+        return force;
 
         return Vector3.zero;
     }
@@ -127,6 +144,9 @@ public class AutonomousAgent : AIAgent
         angle += Random.Range(-data.displacement, data.displacement);
         Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.up);
         Vector3 point = rotation * (Vector3.forward * data.radius);
+
+
+
         Vector3 forward = transform.forward + movement.Direction;
         Vector3 force = GetSteeringForce(forward + point);
 
